@@ -36,7 +36,7 @@ export class UsersService {
     return this.userModel.findOne({ username }).lean(true).exec();
   }
 
-  async create(userData: UserCreateDto): Promise<User> {
-    return this.userModel.create(userData);
+  async create(userData: UserCreateDto): Promise<LeanDocument<User>> {
+    return (await this.userModel.create(userData)).toJSON();
   }
 }

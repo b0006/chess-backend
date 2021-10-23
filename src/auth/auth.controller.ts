@@ -37,7 +37,7 @@ export class AuthController {
   @Get('/logout')
   logout(@Request() req) {
     req.session.destroy();
-    return true;
+    return { success: true };
   }
 
   @UseGuards(AuthenticatedGuard)

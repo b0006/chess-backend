@@ -60,14 +60,14 @@ export class AuthService {
 
     const hash = generateHash(bodyData.password);
 
-    this.usersService.create({
+    const newUser = await this.usersService.create({
       username: bodyData.username,
       email: bodyData.email,
       password: hash,
     });
 
-    return {
-      success: true,
-    };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = newUser;
+    return result;
   }
 }
