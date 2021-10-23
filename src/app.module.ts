@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -11,7 +12,14 @@ import { BoardsModule } from './boards/boards.module';
     AuthModule,
     UsersModule,
     BoardsModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/chess'),
+    ConfigModule.forRoot({ envFilePath: '.env' }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
   providers: [AppService],
 })
