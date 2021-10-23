@@ -7,6 +7,7 @@ import {
   Body,
   UseGuards,
   UseFilters,
+  HttpCode,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -22,11 +23,13 @@ export class AuthController {
 
   @UseGuards(LoginGuard)
   @Post('sign-in')
+  @HttpCode(200)
   async signIn(@Request() req) {
     return req.user;
   }
 
   @Post('sign-up')
+  @HttpCode(200)
   async signUp(@Body() bodyData: AuthSignUpDto) {
     return this.authService.signUp(bodyData);
   }

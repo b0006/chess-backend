@@ -11,7 +11,7 @@ import { BoardsModule } from './boards/boards.module';
     AuthModule,
     UsersModule,
     BoardsModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/task-man'),
+    MongooseModule.forRoot('mongodb://localhost:27017/chess'),
   ],
   providers: [AppService],
 })
