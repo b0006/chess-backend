@@ -28,10 +28,14 @@ export class ChessService {
   }
 
   // TODO: написать нормальный тип
-  async findAllByProfile(playerId: User): Promise<LeanDocument<any[]>> {
+  async findAllByProfile(
+    playerId: User,
+    isPlaying = false,
+  ): Promise<LeanDocument<any[]>> {
     const chessList = await this.chessModel
       .find({
         $or: [
+          { isPlaying },
           { creater: playerId },
           { whitePlayer: playerId },
           { blackPlayer: playerId },
