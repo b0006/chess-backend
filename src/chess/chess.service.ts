@@ -17,7 +17,8 @@ export class ChessService {
     return chessList.map((chess) => chess.toJSON());
   }
 
-  async findAllByProfile(playerId: User): Promise<LeanDocument<Chess[]>> {
+  // TODO: написать нормальный тип
+  async findAllByProfile(playerId: User): Promise<LeanDocument<any[]>> {
     const chessList = await this.chessModel
       .find({
         $or: [
@@ -26,9 +27,20 @@ export class ChessService {
           { blackPlayer: playerId },
         ],
       })
+      .populate('creater', 'username')
+      .populate('blackPlayer', 'username')
+      .populate('whitePlayer', 'username')
       .exec();
 
-    return chessList.map((chess) => chess.toJSON());
+    return chessList.map((party) => {
+      const partyData = party.toJSON();
+      return {
+        ...partyData,
+        creater: partyData.creater.username,
+        blackPlayer: partyData.blackPlayer?.username || null,
+        whitePlayer: partyData.whitePlayer?.username || null,
+      };
+    });
   }
 
   async findAllByCreater(createrId: User): Promise<LeanDocument<Chess[]>> {
@@ -45,8 +57,8 @@ export class ChessService {
     const data: Partial<LeanDocument<Chess>> = {
       ...chessData,
       creater: createrId,
-      blackPlayer: chessData.colorCreater === 'b' && createrId,
-      whitePlayer: chessData.colorCreater === 'w' && createrId,
+      blackPlayer: chessData.colorCreater === 'b' ? createrId : undefined,
+      whitePlayer: chessData.colorCreater === 'w' ? createrId : undefined,
     };
 
     return this.chessModel.create(data);
