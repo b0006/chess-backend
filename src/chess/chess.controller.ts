@@ -29,7 +29,8 @@ export class ChessController {
     if (!created) {
       throw new BadRequestException('Ошибка. Партия не была создана');
     }
-    return created.toJSON();
+
+    return this.chessService.findOneById(created._id);
   }
 
   @UseGuards(AuthenticatedGuard)

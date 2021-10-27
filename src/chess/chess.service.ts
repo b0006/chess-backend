@@ -6,6 +6,16 @@ import { Chess } from './chess.schema';
 import { ChessCreateDto } from './dto/chess-create.dto';
 import { User } from 'src/users/users.schema';
 
+const computedParty = (party: Chess) => {
+  const partyData = party.toJSON();
+  return {
+    ...partyData,
+    creater: partyData.creater.username,
+    blackPlayer: partyData.blackPlayer?.username || null,
+    whitePlayer: partyData.whitePlayer?.username || null,
+  };
+};
+
 @Injectable()
 export class ChessService {
   constructor(@InjectModel(Chess.name) private chessModel: Model<Chess>) {}
@@ -32,15 +42,7 @@ export class ChessService {
       .populate('whitePlayer', 'username')
       .exec();
 
-    return chessList.map((party) => {
-      const partyData = party.toJSON();
-      return {
-        ...partyData,
-        creater: partyData.creater.username,
-        blackPlayer: partyData.blackPlayer?.username || null,
-        whitePlayer: partyData.whitePlayer?.username || null,
-      };
-    });
+    return chessList.map(computedParty);
   }
 
   async findAllByCreater(createrId: User): Promise<LeanDocument<Chess[]>> {
@@ -48,9 +50,15 @@ export class ChessService {
     return chessList.map((chess) => chess.toJSON());
   }
 
-  async findOneById(chessId: Types.ObjectId): Promise<LeanDocument<Chess>> {
-    const chess = await this.chessModel.findOne({ _id: chessId }).exec();
-    return chess?.toJSON();
+  // TODO: написать нормальный тип
+  async findOneById(chessId: Types.ObjectId): Promise<LeanDocument<any>> {
+    const chess = await this.chessModel
+      .findOne({ _id: chessId })
+      .populate('creater', 'username')
+      .populate('blackPlayer', 'username')
+      .populate('whitePlayer', 'username')
+      .exec();
+    return chess && computedParty(chess);
   }
 
   create(createrId: User, chessData: ChessCreateDto): Promise<Chess> {
