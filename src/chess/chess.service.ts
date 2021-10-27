@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Chess } from './chess.schema';
 import { ChessCreateDto } from './dto/chess-create.dto';
+import { User } from 'src/users/users.schema';
 
 @Injectable()
 export class ChessService {
@@ -16,10 +17,21 @@ export class ChessService {
     return chessList.map((chess) => chess.toJSON());
   }
 
-  async findAllByCreater(
-    // TODO: установить корректный тип
-    createrId: any,
-  ): Promise<LeanDocument<Chess[]>> {
+  async findAllByProfile(playerId: User): Promise<LeanDocument<Chess[]>> {
+    const chessList = await this.chessModel
+      .find({
+        $or: [
+          { creater: playerId },
+          { whitePlayer: playerId },
+          { blackPlayer: playerId },
+        ],
+      })
+      .exec();
+
+    return chessList.map((chess) => chess.toJSON());
+  }
+
+  async findAllByCreater(createrId: User): Promise<LeanDocument<Chess[]>> {
     const chessList = await this.chessModel.find({ creater: createrId }).exec();
     return chessList.map((chess) => chess.toJSON());
   }
@@ -30,7 +42,6 @@ export class ChessService {
   }
 
   create(chessData: ChessCreateDto): Promise<Chess> {
-    // const titleTranspile = transpileTitle(boardData.title);
     return this.chessModel.create(chessData);
   }
 

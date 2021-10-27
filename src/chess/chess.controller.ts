@@ -38,11 +38,7 @@ export class ChessController {
   @UseGuards(AuthenticatedGuard)
   @Get('/')
   async findByProfile(@Request() req) {
-    // TODO: еще найти партии, где пользователь участник
-    const chessList = await this.chessService.findAll({
-      creater: req.user.id,
-    });
-
+    const chessList = await this.chessService.findAllByProfile(req.user.id);
     return chessList;
   }
 
