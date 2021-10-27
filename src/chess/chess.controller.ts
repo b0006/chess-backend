@@ -24,11 +24,8 @@ export class ChessController {
 
   @UseGuards(AuthenticatedGuard)
   @Post('/')
-  async create(@Request() req, @Body() body: Omit<ChessCreateDto, 'creater'>) {
-    const created = await this.chessService.create({
-      ...body,
-      creater: req.user.id,
-    });
+  async create(@Request() req, @Body() body: ChessCreateDto) {
+    const created = await this.chessService.create(req.user.id, body);
     if (!created) {
       throw new BadRequestException('Ошибка. Партия не была создана');
     }

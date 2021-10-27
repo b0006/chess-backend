@@ -1,12 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
-import { Types } from 'mongoose';
+
+type ChessColor = 'w' | 'b';
 
 export class ChessCreateDto {
   @IsNotEmpty()
-  creater: Types.ObjectId;
-
-  whitePlayer: Types.ObjectId;
-  blackPlayer: Types.ObjectId;
+  colorCreater: ChessColor;
 
   isVersusAi: boolean;
   isPlaying: boolean;

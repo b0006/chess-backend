@@ -41,8 +41,15 @@ export class ChessService {
     return chess?.toJSON();
   }
 
-  create(chessData: ChessCreateDto): Promise<Chess> {
-    return this.chessModel.create(chessData);
+  create(createrId: User, chessData: ChessCreateDto): Promise<Chess> {
+    const data: Partial<LeanDocument<Chess>> = {
+      ...chessData,
+      creater: createrId,
+      blackPlayer: chessData.colorCreater === 'b' && createrId,
+      whitePlayer: chessData.colorCreater === 'w' && createrId,
+    };
+
+    return this.chessModel.create(data);
   }
 
   remove(chessId: Types.ObjectId): Promise<Chess> {
