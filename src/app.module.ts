@@ -6,12 +6,14 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { BoardsModule } from './boards/boards.module';
+import { ChessModule } from './chess/chess.module';
 
 @Module({
   imports: [
     AuthModule,
     UsersModule,
     BoardsModule,
+    ChessModule,
     ConfigModule.forRoot({ envFilePath: '.env' }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
