@@ -1,12 +1,19 @@
-import { ValidationPipe } from '@nestjs/common';
+declare const module: any;
+
 import { NestFactory } from '@nestjs/core';
-import * as passport from 'passport';
-import * as session from 'express-session';
+import { ValidationPipe } from '@nestjs/common';
+// import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+// import { json } from 'body-parser';
+import { urlencoded, json } from 'express';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // parse application/x-www-form-urlencoded
+  app.use(urlencoded({ extended: true }));
+  // parse application/json
+  app.use(json());
 
   app.enableCors({
     origin: true,
@@ -17,16 +24,22 @@ async function bootstrap() {
   // for class-transformer and class-validator
   app.useGlobalPipes(new ValidationPipe());
 
-  app.use(
-    session({
-      secret: 'moveyourbody',
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
-  app.use(passport.initialize());
-  app.use(passport.session());
+  // const options = new DocumentBuilder()
+  //   .setTitle('ECO BOOM API')
+  //   .setDescription('Описание к API')
+  //   .setVersion('1.0')
+  //   .addBearerAuth({ in: 'header', type: 'http' })
+  //   .build();
 
-  await app.listen(process.env.PORT || 4000);
+  // const document = SwaggerModule.createDocument(app, options);
+  // SwaggerModule.setup('api/v1', app, document);
+
+  // app.use('/uploads', expressStatic('uploads'));
+  await app.listen(4000);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();

@@ -1,46 +1,56 @@
 import {
   Controller,
   Request,
-  Response,
-  Get,
   Post,
-  Body,
   UseGuards,
-  UseFilters,
   HttpCode,
+  Get,
 } from '@nestjs/common';
+// import { ApiBody, ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 
+// import { HttpFailed } from '../common/dto/http-failed.dto';
+
+// import { AuthLoginDto } from './dto/login.dto';
+// import { AuthLoginResponseDto } from './dto/login-response.dto';
 import { AuthService } from './auth.service';
-import { AuthSignUpDto } from './dto/auth.sign-up.dto';
-import { AuthFilter } from './filters/auth.filter';
-import { AuthenticatedGuard } from './guards/authenticated.guard';
-import { LoginGuard } from './guards/login.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
-@UseFilters(AuthFilter)
-@Controller('/auth')
+// @ApiTags('Auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(LoginGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('sign-in')
   @HttpCode(200)
+  // @ApiOperation({ summary: 'Авторизация' })
+  // @ApiResponse({ status: 200, description: 'Авторизация прошла успешно', type: AuthLoginResponseDto })
+  // @ApiResponse({ status: 401, description: 'Неверный логин или пароль', type: HttpFailed })
+  // @ApiBody({ type: AuthLoginDto, description: 'Входные параметры для авторизации' })
   async signIn(@Request() req) {
-    return req.user;
+    return this.authService.signIn(req.user);
   }
 
-  @Post('sign-up')
-  @HttpCode(200)
-  async signUp(@Body() bodyData: AuthSignUpDto) {
-    return this.authService.signUp(bodyData);
-  }
+  // @Post('sign-up')
+  // @HttpCode(200)
+  // async signUp(@Body() bodyData: AuthSignUpDto) {
+  //   return this.authService.signUp(bodyData);
+  // }
 
-  @Get('/logout')
-  logout(@Request() req) {
-    req.session.destroy();
-    return { success: true };
-  }
+  // @Get('/logout')
+  // logout(@Request() req) {
+  //   req.session.destroy();
+  //   return { success: true };
+  // }
 
-  @UseGuards(AuthenticatedGuard)
+  // @UseGuards(AuthenticatedGuard)
+  // @Get('profile')
+  // getProfile(@Request() req) {
+  //   return req.user;
+  // }
+
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;

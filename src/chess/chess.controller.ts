@@ -12,17 +12,17 @@ import {
 } from '@nestjs/common';
 
 import { ChessService } from './chess.service';
-import { AuthFilter } from '../auth/filters/auth.filter';
+// import { AuthFilter } from '../auth/filters/auth.filter';
 import { ChessCreateDto } from './dto/chess-create.dto';
 import { ChessDeleteDto } from './dto/chess-delete.dto';
-import { AuthenticatedGuard } from '../auth/guards/authenticated.guard';
+// import { AuthenticatedGuard } from '../auth/guards/authenticated.guard';
 
-@UseFilters(AuthFilter)
+// @UseFilters(AuthFilter)
 @Controller('/api/chess')
 export class ChessController {
   constructor(private chessService: ChessService) {}
 
-  @UseGuards(AuthenticatedGuard)
+  // @UseGuards(AuthenticatedGuard)
   @Post('/')
   async create(@Request() req, @Body() body: ChessCreateDto) {
     const created = await this.chessService.create(req.user.id, body);
@@ -33,14 +33,14 @@ export class ChessController {
     return this.chessService.findOneById(created._id);
   }
 
-  @UseGuards(AuthenticatedGuard)
+  // @UseGuards(AuthenticatedGuard)
   @Get('/')
   async findByProfile(@Request() req) {
     const chessList = await this.chessService.findAllByProfile(req.user.id);
     return chessList;
   }
 
-  @UseGuards(AuthenticatedGuard)
+  // @UseGuards(AuthenticatedGuard)
   @Delete('/')
   async remove(@Request() req, @Body() body: ChessDeleteDto) {
     const chessId = body.id;
@@ -63,7 +63,7 @@ export class ChessController {
     return { status: true };
   }
 
-  @UseGuards(AuthenticatedGuard)
+  // @UseGuards(AuthenticatedGuard)
   @Get('/:id')
   async findOne(@Request() req) {
     const chess = await this.chessService.findOneById(req.params.id);
