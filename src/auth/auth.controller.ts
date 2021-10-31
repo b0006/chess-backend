@@ -13,9 +13,14 @@ import { AuthSignUpDto } from './dto/auth.sign-up.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
+import { UsersService } from '../users/users.service';
+
 @Controller('/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('sign-in')
@@ -30,15 +35,10 @@ export class AuthController {
     return this.authService.signUp(bodyData);
   }
 
-  // @Get('/logout')
-  // logout(@Request() req) {
-  //   req.session.destroy();
-  //   return { success: true };
-  // }
-
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return this.usersService.findOne({ username: req.user.username });
+    // return req.user;
   }
 }
