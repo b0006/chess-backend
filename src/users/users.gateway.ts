@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 
-@WebSocketGateway(81, { transports: ['websocket'] })
+@WebSocketGateway({ transports: ['websocket'] })
 export class UsersGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
