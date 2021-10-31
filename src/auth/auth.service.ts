@@ -2,7 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
-  // BadRequestException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bCrypt from 'bcrypt';
@@ -10,10 +10,11 @@ import { LeanDocument } from 'mongoose';
 
 import { UsersService } from '../users/users.service';
 import { User } from '../users/users.schema';
+import { AuthSignUpDto } from './dto/auth.sign-up.dto';
 
-// const generateHash = (plaintPassword: string | Buffer) => {
-//   return bCrypt.hashSync(plaintPassword, bCrypt.genSaltSync(8));
-// };
+const generateHash = (plaintPassword: string | Buffer) => {
+  return bCrypt.hashSync(plaintPassword, bCrypt.genSaltSync(8));
+};
 
 const isValidPassword = (
   plaintPassword: string | Buffer,
@@ -60,28 +61,28 @@ export class AuthService {
     };
   }
 
-  // async signUp(bodyData: AuthSignUpDto) {
-  //   const isAlreadyExist = await this.usersService.findOne({
-  //     username: bodyData.username,
-  //     email: bodyData.email,
-  //   });
+  async signUp(bodyData: AuthSignUpDto) {
+    const isAlreadyExist = await this.usersService.findOne({
+      username: bodyData.username,
+      email: bodyData.email,
+    });
 
-  //   if (isAlreadyExist) {
-  //     throw new BadRequestException(
-  //       'Пользователь с таким логином или email уже существует',
-  //     );
-  //   }
+    if (isAlreadyExist) {
+      throw new BadRequestException(
+        'Пользователь с таким логином или email уже существует',
+      );
+    }
 
-  //   const hash = generateHash(bodyData.password);
+    const hash = generateHash(bodyData.password);
 
-  //   const newUser = await this.usersService.create({
-  //     username: bodyData.username,
-  //     email: bodyData.email,
-  //     password: hash,
-  //   });
+    const newUser = await this.usersService.create({
+      username: bodyData.username,
+      email: bodyData.email,
+      password: hash,
+    });
 
-  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   const { password, ...result } = newUser;
-  //   return result;
-  // }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = newUser;
+    return result;
+  }
 }
