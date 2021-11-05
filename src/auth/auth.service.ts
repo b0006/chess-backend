@@ -11,6 +11,12 @@ import { LeanDocument } from 'mongoose';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/users.schema';
 import { AuthSignUpDto } from './dto/auth.sign-up.dto';
+import { jwtConstants } from './constants';
+
+interface VerifyUser extends Pick<User, 'id' | 'username'> {
+  iat: number;
+  exp: number;
+}
 
 const generateHash = (plaintPassword: string | Buffer) => {
   return bCrypt.hashSync(plaintPassword, bCrypt.genSaltSync(8));
@@ -47,6 +53,17 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = user;
     return result;
+  }
+
+  async verifyToken(token: string) {
+    try {
+      const result: VerifyUser = await this.jwtService.verify(token, {
+        secret: jwtConstants.secret,
+      });
+      return result.id;
+    } catch (err) {
+      return null;
+    }
   }
 
   async signIn(user: User) {

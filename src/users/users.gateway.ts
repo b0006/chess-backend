@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -8,12 +9,15 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 
+import { WsJwtGuard } from '../auth/guards/ws-auth-guard';
+
 @WebSocketGateway({ transports: ['websocket'] })
 export class UsersGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() server: Server;
 
+  @UseGuards(WsJwtGuard)
   @SubscribeMessage('userTest')
   handleMessage(client: Socket, payload: string): void {
     try {
