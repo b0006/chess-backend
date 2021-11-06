@@ -15,13 +15,19 @@ export class WsJwtGuard implements CanActivate {
       if (!token) {
         return false;
       }
-      const userId = await this.authService.verifyToken(token);
-      if (!userId) {
+      const user = await this.authService.verifyToken(token);
+      if (!user) {
         return false;
       }
 
-      return Boolean(userId);
+      context.switchToWs().getClient().userData = {
+        id: user.id,
+        username: user.username,
+      };
+
+      return Boolean(user);
     } catch (err) {
+      console.log(err.message);
       throw new WsException(err.message);
     }
   }

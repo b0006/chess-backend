@@ -55,12 +55,12 @@ export class AuthService {
     return result;
   }
 
-  async verifyToken(token: string) {
+  async verifyToken(token: string): Promise<VerifyUser> {
     try {
       const result: VerifyUser = await this.jwtService.verify(token, {
         secret: jwtConstants.secret,
       });
-      return result.id;
+      return result;
     } catch (err) {
       return null;
     }
