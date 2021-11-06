@@ -20,10 +20,10 @@ export class WsJwtGuard implements CanActivate {
         return false;
       }
 
-      context.switchToWs().getClient().userData = {
-        id: user.id,
-        username: user.username,
-      };
+      // context.switchToWs().getClient().userData = {
+      //   id: user.id,
+      //   username: user.username,
+      // };
 
       return Boolean(user);
     } catch (err) {
