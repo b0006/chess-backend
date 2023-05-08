@@ -1,0 +1,53 @@
+#docker-compose file
+version: '3.3'
+
+services:
+  dev:
+    container_name: nestjs_chess_dev
+    image: nestjs_chess_dev:1.0.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run start:dev
+    ports:
+      - 4000:4000
+      - 3001:9229
+    networks:
+      - nesjs-network
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    # volumes:
+    #   - ./mongo-init/init.js:/docker-entrypoint-initdb.d/init.js
+    ports:
+      - 27017:27017
+    networks:
+      - nesjs-network
+    restart: always
+  prod:
+    container_name: nestjs_chess_prod
+    image: nestjs_chess_prod:1.0.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 4000:4000
+      - 9229:9229
+    networks:
+      - nesjs-network
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+networks:
+  nesjs-network:
+    driver: bridge

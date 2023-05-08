@@ -23,6 +23,8 @@ export class ChessService {
   async findAll(
     data?: LeanDocument<Partial<Chess>>,
   ): Promise<LeanDocument<Chess[]>> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const chessList = await this.chessModel.find(data).exec();
     return chessList.map((chess) => chess.toJSON());
   }
