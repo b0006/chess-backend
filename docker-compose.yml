@@ -22,9 +22,9 @@ services:
     restart: unless-stopped
   mongodb:
     image: mongo:latest
-    container_name: mongodb
-    # volumes:
-    #   - ./mongo-init/init.js:/docker-entrypoint-initdb.d/init.js
+    container_name: container_mongodb
+    volumes:
+      - ./mongo-init/init.js:/docker-entrypoint-initdb.d/init.js
     ports:
       - 27017:27017
     networks:
