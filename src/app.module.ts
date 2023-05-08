@@ -15,9 +15,16 @@ import { ChessModule } from './chess/chess.module';
     ConfigModule.forRoot({ envFilePath: '.env' }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        return {
+          uri: configService.get<string>('MONGODB_URI'),
+          dbName: configService.get<string>('MONGODB_DB_NAME'),
+          auth: {
+            user: configService.get<string>('MONGODB_USERNAME'),
+            password: configService.get<string>('MONGODB_PASSWORD'),
+          },
+        };
+      },
       inject: [ConfigService],
     }),
   ],

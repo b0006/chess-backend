@@ -10,8 +10,7 @@ services:
       dockerfile: ./Dockerfile
     command: npm run start:dev
     ports:
-      - 4000:4000
-      - 3001:9229
+      - ${APP_PORT}:${APP_PORT}
     networks:
       - nesjs-network
     depends_on:
@@ -23,10 +22,14 @@ services:
   mongodb:
     image: mongo:latest
     container_name: container_mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DB_NAME}
     volumes:
-      - ./mongo-init/init.js:/docker-entrypoint-initdb.d/init.js
+      - ./mongo-init/:/docker-entrypoint-initdb.d/:ro
     ports:
-      - 27017:27017
+      - ${MONGODB_PORT}:${MONGODB_PORT}
     networks:
       - nesjs-network
     restart: always
@@ -38,8 +41,7 @@ services:
       dockerfile: ./Dockerfile
     command: npm run start:prod
     ports:
-      - 4000:4000
-      - 9229:9229
+      - ${APP_PORT}:${APP_PORT}
     networks:
       - nesjs-network
     depends_on:

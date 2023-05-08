@@ -1,13 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { MongoClient } = require('mongodb');
-const uri = 'mongodb://container_mongodb:27017/';
-const client = new MongoClient(uri);
+conn = new Mongo();
+// TODO: get MONGODB_DB_NAME from .env
+db = conn.getDB('chess');
 
-client.connect(async (err) => {
-  if (!err) {
-    console.log('connection created');
-  }
-  const newDB = client.db('chess');
-  newDB.createCollection('test-collection'); // This line is important. Unless you create collection you can not see your database in mongodb .
-  client.close();
+// INIT THE FIRST PROFILE AT DATABASE
+db.users.insert({
+  username: 'test',
+  email: 'test@mail.ru',
+  password: '$2b$08$Z6TwysYYO0KeZ3k0bY/MA.rCMtC0eFxzBWsb2lAa6wnPC7xwjGOmu', // 13820003
 });
