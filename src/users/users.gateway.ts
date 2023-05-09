@@ -49,7 +49,7 @@ export class UsersGateway
   }
 
   afterInit(server: Server) {
-    console.log('Init');
+    console.log('Init 2');
   }
 
   handleDisconnect(client: SocketCustom) {

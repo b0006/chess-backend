@@ -48,7 +48,7 @@ export class ChessController {
       throw new NotFoundException('Партия не найдена для удаления');
     }
 
-    if (chess.creater !== req.user?.id) {
+    if (chess.creater !== req.user?.username) {
       throw new BadRequestException('Запрещено удалять чужие партии');
     }
 

@@ -22,12 +22,6 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  // TODO: remove (temp request for tests)
-  @Get('users')
-  getUsers(@Request() req) {
-    return this.usersService.findAll();
-  }
-
   @UseGuards(LocalAuthGuard)
   @Post('sign-in')
   @HttpCode(200)
@@ -45,6 +39,5 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return this.usersService.findOne({ username: req.user.username });
-    // return req.user;
   }
 }

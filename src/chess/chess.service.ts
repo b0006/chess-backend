@@ -79,6 +79,8 @@ export class ChessService {
   }
 
   remove(chessId: Types.ObjectId): Promise<Chess> {
-    return this.chessModel.findOneAndRemove({ _id: chessId }).exec();
+    return this.chessModel
+      .findOneAndDelete({ _id: chessId }, { useFindAndModify: true })
+      .exec();
   }
 }
