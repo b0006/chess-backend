@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { LeanDocument, Types, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { UsersService } from '../users/users.service';
 import { Chess } from './chess.schema';
 import { ChessCreateDto } from './dto/chess-create.dto';
 import { ChessUpdateDto } from './dto/chess-update.dto';
@@ -20,7 +21,10 @@ const computedParty = (party: PopulateChess): ComputedChess => {
 
 @Injectable()
 export class ChessService {
-  constructor(@InjectModel(Chess.name) private chessModel: Model<Chess>) {}
+  constructor(
+    @InjectModel(Chess.name) private chessModel: Model<Chess>,
+    private usersService: UsersService,
+  ) {}
 
   async findAllByProfile(
     playerId: Types.ObjectId,
@@ -36,6 +40,7 @@ export class ChessService {
         ],
       })
       .populate('creater', 'username')
+      .populate('winPlayer', 'username')
       .populate('blackPlayer', 'username')
       .populate('whitePlayer', 'username')
       .exec()) as unknown as PopulateChess[];
@@ -59,16 +64,10 @@ export class ChessService {
       throw new BadRequestException('Party ID is not valid');
     }
 
-    // const chess = await this.chessModel
-    //   .findOne({ _id: chessId })
-    //   .populate('creater', 'username')
-    //   .populate('blackPlayer', 'username')
-    //   .populate('whitePlayer', 'username')
-    //   .exec();
-
     const party = (await this.chessModel
       .findOne({ _id: chessId })
       .populate('creater', 'username')
+      .populate('winPlayer', 'username')
       .populate('blackPlayer', 'username')
       .populate('whitePlayer', 'username')
       .exec()) as unknown as PopulateChess;
@@ -81,7 +80,6 @@ export class ChessService {
   }
 
   create(createrId: Types.ObjectId, chessData: ChessCreateDto): Promise<Chess> {
-    console.log('createrId', createrId);
     const data: Partial<LeanDocument<Chess>> = {
       ...chessData,
       creater: createrId,
@@ -92,20 +90,29 @@ export class ChessService {
     return this.chessModel.create(data);
   }
 
-  // TODO: remove any type
-  update(chessId: Types.ObjectId, chessData: ChessUpdateDto): any {
+  async update(
+    chessId: Types.ObjectId,
+    chessData: ChessUpdateDto,
+  ): Promise<{ status: boolean }> {
     const isValidId = Types.ObjectId.isValid(chessId);
 
     if (!isValidId) {
       throw new BadRequestException('Party ID is not valid');
     }
 
-    return this.chessModel.updateOne(
+    const winPlayer = await this.usersService.findOneByUsername(
+      chessData.winPlayer,
+    );
+
+    const updated = await this.chessModel.updateOne(
       { _id: chessId },
       {
-        winPlayer: chessData.winPlayer,
+        ...chessData,
+        winPlayer: winPlayer?._id?.toString() || null,
       },
     );
+
+    return { status: Boolean(updated.ok) };
   }
 
   remove(chessId: Types.ObjectId): Promise<Chess> {

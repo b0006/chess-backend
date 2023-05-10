@@ -13,6 +13,7 @@ import {
 import { ChessService } from './chess.service';
 import { ChessCreateDto } from './dto/chess-create.dto';
 import { ChessDeleteDto } from './dto/chess-delete.dto';
+import { ChessUpdateDto } from './dto/chess-update.dto';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -67,6 +68,18 @@ export class ChessController {
     const chess = await this.chessService.findOneById(req.params.id);
     if (!chess) {
       throw new BadRequestException('Error. The party was not found');
+    }
+
+    return chess;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/:id')
+  async update(@Request() req, @Body() body: ChessUpdateDto) {
+    const chess = await this.chessService.update(req.params.id, body);
+
+    if (!chess) {
+      throw new BadRequestException('Error. The party was not updated');
     }
 
     return chess;

@@ -4,7 +4,7 @@ import { GameOverType } from '../types';
 
 export class ChessUpdateDto {
   @IsNotEmpty()
-  winPlayer: Types.ObjectId;
+  winPlayer: string;
 
   @IsNotEmpty()
   resultParty: GameOverType;
