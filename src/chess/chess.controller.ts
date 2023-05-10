@@ -9,10 +9,10 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
+import { Types } from 'mongoose';
 
 import { ChessService } from './chess.service';
 import { ChessCreateDto } from './dto/chess-create.dto';
-import { ChessDeleteDto } from './dto/chess-delete.dto';
 import { ChessUpdateDto } from './dto/chess-update.dto';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -40,9 +40,9 @@ export class ChessController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('/')
-  async remove(@Request() req, @Body() body: ChessDeleteDto) {
-    const chessId = body.id;
+  @Delete('/:id')
+  async remove(@Request() req) {
+    const chessId: Types.ObjectId = req.params.id;
 
     const chess = await this.chessService.findOneById(chessId);
     if (!chess) {
