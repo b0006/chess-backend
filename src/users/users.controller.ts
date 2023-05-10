@@ -14,7 +14,7 @@ export class UsersController {
     });
 
     if (!user) {
-      throw new NotFoundException('Пользователь не найден');
+      throw new NotFoundException('Ther user was not found');
     }
 
     return user;

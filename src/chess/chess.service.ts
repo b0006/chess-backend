@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { LeanDocument, Types, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -20,16 +20,7 @@ const computedParty = (party: Chess) => {
 export class ChessService {
   constructor(@InjectModel(Chess.name) private chessModel: Model<Chess>) {}
 
-  async findAll(
-    data?: LeanDocument<Partial<Chess>>,
-  ): Promise<LeanDocument<Chess[]>> {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const chessList = await this.chessModel.find(data).exec();
-    return chessList.map((chess) => chess.toJSON());
-  }
-
-  // TODO: написать нормальный тип
+  // TODO: need correct type
   async findAllByProfile(
     playerId: User,
     isPlaying = false,
@@ -56,8 +47,14 @@ export class ChessService {
     return chessList.map((chess) => chess.toJSON());
   }
 
-  // TODO: написать нормальный тип
+  // TODO: need correct type
   async findOneById(chessId: Types.ObjectId): Promise<LeanDocument<any>> {
+    const isValidId = Types.ObjectId.isValid(chessId);
+
+    if (!isValidId) {
+      throw new BadRequestException('Party ID is not valid');
+    }
+
     const chess = await this.chessModel
       .findOne({ _id: chessId })
       .populate('creater', 'username')

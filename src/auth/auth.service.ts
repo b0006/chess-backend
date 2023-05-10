@@ -43,11 +43,11 @@ export class AuthService {
     const user = await this.usersService.findOne({ email }, true);
 
     if (user === null || typeof user === 'undefined') {
-      throw new NotFoundException('Пользователь c таким email не найден');
+      throw new NotFoundException('Ther user with this email not found');
     }
 
     if (!isValidPassword(plainPassword, user.password)) {
-      throw new ForbiddenException('Неверный пароль');
+      throw new ForbiddenException('Email and/or password is not correct');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -86,7 +86,7 @@ export class AuthService {
 
     if (isAlreadyExist) {
       throw new BadRequestException(
-        'Пользователь с таким логином или email уже существует',
+        'The user with this login or email already exist',
       );
     }
 

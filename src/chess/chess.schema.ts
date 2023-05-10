@@ -42,7 +42,7 @@ export class Chess extends Document {
   })
   winPlayer: User;
 
-  // TODO: подумать над типом
+  // TODO: need correct type
   @Prop({ required: false, default: null })
   resultParty: string; // null | checkmate | draw | ...
 

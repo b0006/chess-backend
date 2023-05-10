@@ -25,14 +25,14 @@ export class ChessController {
   async create(@Request() req, @Body() body: ChessCreateDto) {
     const created = await this.chessService.create(req.user.id, body);
     if (!created) {
-      throw new BadRequestException('Ошибка. Партия не была создана');
+      throw new BadRequestException('Error. Party was not created');
     }
 
     return this.chessService.findOneById(created._id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/')
+  @Get('/profile')
   async findByProfile(@Request() req) {
     const chessList = await this.chessService.findAllByProfile(req.user.id);
     return chessList;
@@ -45,18 +45,18 @@ export class ChessController {
 
     const chess = await this.chessService.findOneById(chessId);
     if (!chess) {
-      throw new NotFoundException('Партия не найдена для удаления');
+      throw new NotFoundException('The party is not found for delete');
     }
 
     if (chess.creater !== req.user?.username) {
-      throw new BadRequestException('Запрещено удалять чужие партии');
+      throw new BadRequestException(
+        'It is forbidden to delete non-your parties',
+      );
     }
 
     const deleted = await this.chessService.remove(chessId);
     if (!deleted) {
-      throw new NotFoundException(
-        'Партия не была удалена. Попробуйте повторить попытку',
-      );
+      throw new NotFoundException('The party was not removed. Try again');
     }
     return { status: true };
   }
@@ -66,7 +66,7 @@ export class ChessController {
   async findOne(@Request() req) {
     const chess = await this.chessService.findOneById(req.params.id);
     if (!chess) {
-      throw new BadRequestException('Ошибка. Партия не найдена');
+      throw new BadRequestException('Error. The party was not found');
     }
 
     return chess;
