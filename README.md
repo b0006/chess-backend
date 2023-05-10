@@ -1,4 +1,4 @@
-# TaskMan (backend)
+# Chess (backend)
 
 ## Description
 
@@ -26,3 +26,15 @@ $ npm run start:prod
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+### Run by Docker
+
+```bash
+# development
+$ npm run docker:dev
+```
+
+```bash
+# production
+$ npm run docker:prod
+```

@@ -20,6 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:dev": "docker-compose up dev",
+    "docker:prod": "docker-compose up prod",
     "docker:mongo-bash": "docker exec -i -t container_mongodb bash"
   },
   "dependencies": {
