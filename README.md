@@ -23,11 +23,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## License
-
-Nest is [MIT licensed](LICENSE).
-
-### Run by Docker
+## Running via Docker
 
 ```bash
 # development
@@ -38,3 +34,7 @@ $ npm run docker:dev
 # production
 $ npm run docker:prod
 ```
+
+## License
+
+Nest is [MIT licensed](LICENSE).
