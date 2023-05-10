@@ -17,7 +17,7 @@ import { GameOverType } from './types';
 })
 export class Chess extends Document {
   @Prop({ required: true, type: Types.ObjectId, ref: User.name })
-  creater: User;
+  creater: Types.ObjectId;
 
   @Prop({
     required: false,
@@ -25,7 +25,7 @@ export class Chess extends Document {
     type: Types.ObjectId,
     ref: User.name,
   })
-  whitePlayer: User;
+  whitePlayer: Types.ObjectId;
 
   @Prop({
     required: false,
@@ -33,7 +33,7 @@ export class Chess extends Document {
     type: Types.ObjectId,
     ref: User.name,
   })
-  blackPlayer: User;
+  blackPlayer: Types.ObjectId;
 
   @Prop({
     required: false,
@@ -41,7 +41,7 @@ export class Chess extends Document {
     type: Types.ObjectId,
     ref: User.name,
   })
-  winPlayer: User;
+  winPlayer: Types.ObjectId;
 
   @Prop({ required: false, default: null })
   resultParty: GameOverType | null;

@@ -1,12 +1,11 @@
 import { IsNotEmpty, Validate } from 'class-validator';
+import { PieceColor } from '../types';
 import { PieceColorCheck } from './validator';
-
-type ChessColor = 'w' | 'b';
 
 export class ChessCreateDto {
   @IsNotEmpty()
   @Validate(PieceColorCheck)
-  colorCreater: ChessColor;
+  colorCreater: PieceColor;
 
   isVersusAi: boolean;
   isPlaying: boolean;

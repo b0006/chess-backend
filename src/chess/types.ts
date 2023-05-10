@@ -1,3 +1,6 @@
+import { User } from 'src/users/users.schema';
+import { Chess } from './chess.schema';
+
 export type PieceColor = 'w' | 'b';
 
 export type GameOverType =
@@ -15,4 +18,12 @@ export interface ComputedChess {
   resultParty: GameOverType | null;
   isVersusAi: boolean;
   isPlaying: boolean;
+}
+
+export interface PopulateChess
+  extends Omit<Chess, 'creater' | 'blackPlayer' | 'whitePlayer' | 'winPlayer'> {
+  creater: User;
+  blackPlayer: User;
+  whitePlayer: User;
+  winPlayer: User;
 }
