@@ -5,6 +5,7 @@ import { User } from '../users/users.schema';
 import { GameOverType } from './types';
 
 @Schema({
+  timestamps: true,
   toJSON: {
     virtuals: true,
     versionKey: false,
