@@ -28,6 +28,12 @@ export class Chess extends Document {
   })
   whitePlayer: Types.ObjectId;
 
+  @Prop({ required: false, default: null })
+  fen: string;
+
+  @Prop({ required: false, default: null })
+  pgn: string;
+
   @Prop({
     required: false,
     default: null,

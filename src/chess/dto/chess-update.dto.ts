@@ -10,4 +10,8 @@ export class ChessUpdateDto {
 
   @IsNotEmpty()
   isPlaying: boolean;
+
+  fen: string;
+
+  pgn: string;
 }
