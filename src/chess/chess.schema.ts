@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 import { User } from '../users/users.schema';
-import { GameOverType } from './types';
+import { GameOverType, PromotionPiece } from './types';
 
 @Schema({
   timestamps: true,
@@ -58,6 +58,24 @@ export class Chess extends Document {
 
   @Prop({ required: false, default: false })
   isPlaying: boolean;
+
+  @Prop({ required: false, default: false })
+  isAutoPromotion: boolean;
+
+  @Prop({ required: false, default: 'q' })
+  autopromotionPiece: PromotionPiece;
+
+  @Prop({ required: false, default: false })
+  isColoredMoves: boolean;
+
+  @Prop({ required: false, default: false })
+  isConfirmSteps: boolean;
+
+  @Prop({ required: false, default: false })
+  isAudioOn: boolean;
+
+  @Prop({ required: false, default: null })
+  difficult: number;
 }
 
 export const ChessSchema = SchemaFactory.createForClass(Chess);

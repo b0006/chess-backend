@@ -1,6 +1,21 @@
 import { User } from 'src/users/users.schema';
 import { Chess } from './chess.schema';
 
+/**
+ * - "p" for Pawn
+ * - "n" for Knight
+ * - "b" for Bishop
+ * - "r" for Rook
+ * - "q" for Queen
+ * - "k" for King
+ */
+export type PieceType = 'p' | 'n' | 'b' | 'r' | 'q' | 'k';
+export type PromotionPiece = Extract<PieceType, 'n' | 'b' | 'r' | 'q'>;
+
+/**
+ * - "b" for Black
+ * - "w" for White
+ */
 export type PieceColor = 'w' | 'b';
 
 export type GameOverType =

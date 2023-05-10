@@ -1,17 +1,16 @@
-import { IsNotEmpty } from 'class-validator';
-import { GameOverType } from '../types';
+import { GameOverType, PromotionPiece } from '../types';
 
 export class ChessUpdateDto {
-  @IsNotEmpty()
   winPlayer: string;
-
-  @IsNotEmpty()
   resultParty: GameOverType;
-
-  @IsNotEmpty()
   isPlaying: boolean;
-
+  isVersusAi: boolean;
   fen: string;
-
   pgn: string;
+  isAutoPromotion: boolean;
+  autopromotionPiece: PromotionPiece;
+  isColoredMoves: boolean;
+  isConfirmSteps: boolean;
+  isAudioOn: boolean;
+  difficult: number;
 }

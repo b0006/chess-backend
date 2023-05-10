@@ -20,7 +20,7 @@ import { jwtConstants } from './constants';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '4h' },
     }),
   ],
   controllers: [AuthController],
