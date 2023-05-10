@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 import { User } from '../users/users.schema';
+import { GameOverType } from './types';
 
 @Schema({
   toJSON: {
@@ -42,9 +43,8 @@ export class Chess extends Document {
   })
   winPlayer: User;
 
-  // TODO: need correct type
   @Prop({ required: false, default: null })
-  resultParty: string; // null | checkmate | draw | ...
+  resultParty: GameOverType | null;
 
   @Prop({ required: false, default: false })
   isVersusAi: boolean;

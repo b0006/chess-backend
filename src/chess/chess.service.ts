@@ -5,14 +5,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Chess } from './chess.schema';
 import { ChessCreateDto } from './dto/chess-create.dto';
 import { User } from 'src/users/users.schema';
+import { ComputedChess } from './types';
 
-const computedParty = (party: Chess) => {
+const computedParty = (party: Chess): ComputedChess => {
   const partyData = party.toJSON();
   return {
     ...partyData,
     creater: partyData.creater.username,
     blackPlayer: partyData.blackPlayer?.username || null,
     whitePlayer: partyData.whitePlayer?.username || null,
+    winPlayer: partyData.winPlayer?.username || null,
   };
 };
 
@@ -20,12 +22,11 @@ const computedParty = (party: Chess) => {
 export class ChessService {
   constructor(@InjectModel(Chess.name) private chessModel: Model<Chess>) {}
 
-  // TODO: need correct type
   async findAllByProfile(
     playerId: User,
     isPlaying = false,
-  ): Promise<LeanDocument<any[]>> {
-    const chessList = await this.chessModel
+  ): Promise<LeanDocument<ComputedChess[]>> {
+    const chessList: LeanDocument<Chess[]> = await this.chessModel
       .find({
         $or: [
           { isPlaying },
@@ -47,8 +48,9 @@ export class ChessService {
     return chessList.map((chess) => chess.toJSON());
   }
 
-  // TODO: need correct type
-  async findOneById(chessId: Types.ObjectId): Promise<LeanDocument<any>> {
+  async findOneById(
+    chessId: Types.ObjectId,
+  ): Promise<LeanDocument<ComputedChess>> {
     const isValidId = Types.ObjectId.isValid(chessId);
 
     if (!isValidId) {
@@ -61,7 +63,12 @@ export class ChessService {
       .populate('blackPlayer', 'username')
       .populate('whitePlayer', 'username')
       .exec();
-    return chess && computedParty(chess);
+
+    if (!chess) {
+      throw new BadRequestException('Party was not found');
+    }
+
+    return computedParty(chess);
   }
 
   create(createrId: User, chessData: ChessCreateDto): Promise<Chess> {
