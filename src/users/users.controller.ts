@@ -1,5 +1,4 @@
-import { Get, Request, NotFoundException } from '@nestjs/common';
-import { Controller } from '@nestjs/common';
+import { Get, Request, NotFoundException, Controller } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 

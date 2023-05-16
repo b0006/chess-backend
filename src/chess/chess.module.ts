@@ -7,10 +7,7 @@ import { ChessService } from './chess.service';
 import { Chess, ChessSchema } from './chess.schema';
 
 @Module({
-  imports: [
-    UsersModule,
-    MongooseModule.forFeature([{ name: Chess.name, schema: ChessSchema }]),
-  ],
+  imports: [UsersModule, MongooseModule.forFeature([{ name: Chess.name, schema: ChessSchema }])],
   providers: [ChessService],
   controllers: [ChessController],
   exports: [ChessService],

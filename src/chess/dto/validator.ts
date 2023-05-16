@@ -1,7 +1,4 @@
-import {
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+import { ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { PieceColor } from '../types';
 
 const PIECE_COLORS: PieceColor[] = ['w', 'b'];

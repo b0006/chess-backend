@@ -48,16 +48,12 @@ export class ChessService {
     return chessList.map(computedParty);
   }
 
-  async findAllByCreater(
-    createrId: Types.ObjectId,
-  ): Promise<LeanDocument<Chess[]>> {
+  async findAllByCreater(createrId: Types.ObjectId): Promise<LeanDocument<Chess[]>> {
     const chessList = await this.chessModel.find({ creater: createrId }).exec();
     return chessList.map((chess) => chess.toJSON());
   }
 
-  async findOneById(
-    chessId: Types.ObjectId,
-  ): Promise<LeanDocument<ComputedChess>> {
+  async findOneById(chessId: Types.ObjectId): Promise<LeanDocument<ComputedChess>> {
     const isValidId = Types.ObjectId.isValid(chessId);
 
     if (!isValidId) {
@@ -90,19 +86,14 @@ export class ChessService {
     return this.chessModel.create(data);
   }
 
-  async update(
-    chessId: Types.ObjectId,
-    chessData: ChessUpdateDto,
-  ): Promise<{ status: boolean }> {
+  async update(chessId: Types.ObjectId, chessData: ChessUpdateDto): Promise<{ status: boolean }> {
     const isValidId = Types.ObjectId.isValid(chessId);
 
     if (!isValidId) {
       throw new BadRequestException('Party ID is not valid');
     }
 
-    const winPlayer = await this.usersService.findOneByUsername(
-      chessData.winPlayer,
-    );
+    const winPlayer = await this.usersService.findOneByUsername(chessData.winPlayer);
 
     const updated = await this.chessModel.updateOne(
       { _id: chessId },
@@ -116,8 +107,6 @@ export class ChessService {
   }
 
   remove(chessId: Types.ObjectId): Promise<Chess> {
-    return this.chessModel
-      .findOneAndDelete({ _id: chessId }, { useFindAndModify: true })
-      .exec();
+    return this.chessModel.findOneAndDelete({ _id: chessId }, { useFindAndModify: true }).exec();
   }
 }

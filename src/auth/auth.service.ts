@@ -22,19 +22,13 @@ const generateHash = (plaintPassword: string | Buffer) => {
   return bCrypt.hashSync(plaintPassword, bCrypt.genSaltSync(8));
 };
 
-const isValidPassword = (
-  plaintPassword: string | Buffer,
-  passwordHash: string,
-) => {
+const isValidPassword = (plaintPassword: string | Buffer, passwordHash: string) => {
   return bCrypt.compareSync(plaintPassword, passwordHash);
 };
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
   async validateUser(
     email: string,
@@ -85,9 +79,7 @@ export class AuthService {
     });
 
     if (isAlreadyExist) {
-      throw new BadRequestException(
-        'The user with this login or email already exist',
-      );
+      throw new BadRequestException('The user with this login or email already exist');
     }
 
     const hash = generateHash(bodyData.password);

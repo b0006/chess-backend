@@ -50,9 +50,7 @@ export class ChessController {
     }
 
     if (chess.creater !== req.user?.username) {
-      throw new BadRequestException(
-        'It is forbidden to delete non-your parties',
-      );
+      throw new BadRequestException('It is forbidden to delete non-your parties');
     }
 
     const deleted = await this.chessService.remove(chessId);
