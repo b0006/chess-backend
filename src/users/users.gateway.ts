@@ -18,38 +18,34 @@ interface SocketCustom extends Socket {
   userId: string;
 }
 
+const USER_TEST = 'userTest';
+
 @WebSocketGateway({ transports: ['websocket'] })
-export class UsersGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(private authService: AuthService) {}
 
   @WebSocketServer() server: Server;
   wsClientDataList = {};
 
   @UseGuards(WsJwtGuard)
-  @SubscribeMessage('userTest')
-  handleMessage(
-    @MessageBody() content: string,
-    @ConnectedSocket() client: SocketCustom,
-  ): void {
-    console.log(this.wsClientDataList[client.userId].username);
+  @SubscribeMessage(USER_TEST)
+  handleMessage(@MessageBody() content: string, @ConnectedSocket() client: SocketCustom): void {
     try {
       const message = JSON.parse(content);
-      console.log('userTest', message);
+      console.log(`get from CLIENT [${USER_TEST}]`, message);
 
-      // const findClient =
-      //   this.wsClientDataList['61796ea8bb83a00bfc69e000'].client;
-      // findClient.emit('userTest', 'hello');
+      const findClient = this.wsClientDataList[client.userId].client;
+
+      findClient.emit(USER_TEST, 'hello');
     } catch (e) {
-      console.log('Error: userTest');
+      console.log(`Error: ${USER_TEST}`);
     }
     // send to all clients
-    // this.server.emit('userTest', 'hello');
+    // this.server.emit(USER_TEST, 'hello');
   }
 
-  afterInit(server: Server) {
-    console.log('Init 2');
+  afterInit() {
+    console.log('Init "users" websocket gateway');
   }
 
   handleDisconnect(client: SocketCustom) {
@@ -68,9 +64,7 @@ export class UsersGateway
 
   async handleConnection(client: SocketCustom) {
     try {
-      const user = await this.authService.verifyToken(
-        client.handshake.auth.token,
-      );
+      const user = await this.authService.verifyToken(client.handshake.auth.token);
 
       this.wsClientDataList[user.id] = {
         id: user.id,
@@ -79,11 +73,7 @@ export class UsersGateway
       };
 
       client.userId = user.id;
-      console.log(
-        `Client connected: ${this.wsClientDataList[user.id].username} [${
-          client.id
-        }]`,
-      );
+      console.log(`Client connected: ${this.wsClientDataList[user.id].username} [${client.id}]`);
     } catch (err) {
       console.log('WS: connection not auth');
     }
