@@ -18,6 +18,14 @@ interface SocketCustom extends Socket {
   userId: string;
 }
 
+interface ClientData {
+  id: string;
+  username: string;
+  client: SocketCustom;
+}
+
+type ClientListData = Record<string, ClientData>;
+
 const USER_TEST = 'userTest';
 
 @WebSocketGateway({ transports: ['websocket'] })
@@ -25,7 +33,7 @@ export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   constructor(private authService: AuthService) {}
 
   @WebSocketServer() server: Server;
-  wsClientDataList = {};
+  wsClientDataList: ClientListData = {};
 
   @UseGuards(WsJwtGuard)
   @SubscribeMessage(USER_TEST)
