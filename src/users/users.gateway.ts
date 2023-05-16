@@ -67,7 +67,7 @@ export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         {},
       );
     this.wsClientDataList = filteredClientDataList;
-    console.log(`Client disconnected: ${client.userId}`);
+    console.log(`Client disconnected: ${client.id}`);
   }
 
   async handleConnection(client: SocketCustom) {
