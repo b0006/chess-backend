@@ -26,7 +26,13 @@ interface ClientData {
 
 type ClientListData = Record<string, ClientData>;
 
-const USER_TEST = 'userTest';
+const USER_EVENT = {
+  getPartyList: 'getPartyList',
+};
+
+const ERROR = {
+  initConnection: 'initConnection',
+};
 
 @WebSocketGateway({ transports: ['websocket'] })
 export class ChessGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -36,17 +42,17 @@ export class ChessGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   wsClientDataList: ClientListData = {};
 
   @UseGuards(WsJwtGuard)
-  @SubscribeMessage(USER_TEST)
-  handleMessage(@MessageBody() content: string, @ConnectedSocket() client: SocketCustom): void {
+  @SubscribeMessage(USER_EVENT.getPartyList)
+  getPartyList(@MessageBody() content: string, @ConnectedSocket() client: SocketCustom): void {
     try {
       const message = JSON.parse(content);
-      console.log(`get from CLIENT [${USER_TEST}]`, message);
+      console.log(`get from CLIENT [${USER_EVENT.getPartyList}]`, message);
 
       Object.values(this.wsClientDataList[client.userId].clients).forEach((anyClient) => {
-        anyClient.emit(USER_TEST, `hello from ${anyClient.id}`);
+        anyClient.emit(USER_EVENT.getPartyList, `hello from ${anyClient.id}`);
       });
     } catch (e) {
-      console.log(`Error: ${USER_TEST}`);
+      console.log(`Error: ${USER_EVENT.getPartyList}`);
     }
     // send to all clients
     // this.server.emit(USER_TEST, 'hello');
@@ -74,6 +80,10 @@ export class ChessGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     try {
       const user = await this.authService.verifyToken(client.handshake.auth.token);
 
+      if (!user) {
+        throw new Error('Token is invalid');
+      }
+
       this.wsClientDataList[user.id] = {
         id: user.id,
         username: user.username,
@@ -87,6 +97,7 @@ export class ChessGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
       console.log(`Client connected: ${this.wsClientDataList[user.id].username} [${client.id}]`);
     } catch (err) {
       console.log('WS: connection not auth', err);
+      client.emit(ERROR.initConnection, err?.toString() || 'Connection failed');
     }
   }
 }
