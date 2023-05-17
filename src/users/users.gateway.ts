@@ -77,6 +77,7 @@ export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
       this.wsClientDataList[user.id] = {
         id: user.id,
         username: user.username,
+        // TODO: save client list (one user from many sessions)
         client,
       };
 
