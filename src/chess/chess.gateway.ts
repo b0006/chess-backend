@@ -29,7 +29,7 @@ type ClientListData = Record<string, ClientData>;
 const USER_TEST = 'userTest';
 
 @WebSocketGateway({ transports: ['websocket'] })
-export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class ChessGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(private authService: AuthService) {}
 
   @WebSocketServer() server: Server;
@@ -53,7 +53,7 @@ export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   }
 
   afterInit() {
-    console.log('Init "users" websocket gateway');
+    console.log('Init "chess" websocket gateway');
   }
 
   handleDisconnect(client: SocketCustom) {
