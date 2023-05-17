@@ -21,7 +21,7 @@ interface SocketCustom extends Socket {
 interface ClientData {
   id: string;
   username: string;
-  client: SocketCustom;
+  clients: Record<string, SocketCustom>;
 }
 
 type ClientListData = Record<string, ClientData>;
@@ -42,9 +42,9 @@ export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
       const message = JSON.parse(content);
       console.log(`get from CLIENT [${USER_TEST}]`, message);
 
-      const findClient = this.wsClientDataList[client.userId].client;
-
-      findClient.emit(USER_TEST, 'hello');
+      Object.values(this.wsClientDataList[client.userId].clients).forEach((anyClient) => {
+        anyClient.emit(USER_TEST, `hello from ${anyClient.id}`);
+      });
     } catch (e) {
       console.log(`Error: ${USER_TEST}`);
     }
@@ -77,14 +77,16 @@ export class UsersGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
       this.wsClientDataList[user.id] = {
         id: user.id,
         username: user.username,
-        // TODO: save client list (one user from many sessions)
-        client,
+        clients: {
+          ...(this.wsClientDataList?.[user.id]?.clients || {}),
+          [client.id]: client,
+        },
       };
 
       client.userId = user.id;
       console.log(`Client connected: ${this.wsClientDataList[user.id].username} [${client.id}]`);
     } catch (err) {
-      console.log('WS: connection not auth');
+      console.log('WS: connection not auth', err);
     }
   }
 }
